@@ -203,7 +203,7 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+        status_command i3blocks
 	colors {
 		background $bg-color
 	    	separator #757575
@@ -212,6 +212,7 @@ bar {
 		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
 		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
 	}
+        
 }
 
 
@@ -219,9 +220,9 @@ bindsym Ctrl+Shift+s exec --no-startup-id $i3lockwall && systemctl suspend
 bindsym Shift+Print  exec spectacle --region
 
 exec_always feh --bg-scale /home/daniel/Downloads/Telegram\ Desktop/waterfall.png
-exec compton -I 0.1
+# exec compton -I 0.1
 exec bluetooth off
-exec --no-startup-id "setxkbmap -model pc105 -layout us,gr -option grp:alt_shift_toggle"
+exec --no-startup-id "setxkbmap -model pc105 -layout us,ru -option grp:alt_caps_toggle"
 
 #COLORS
 

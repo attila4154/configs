@@ -1,0 +1,30 @@
+#!bin/sh
+
+# Guess the weather hourly
+#[weather]
+#command=curl -Ss 'https://wttr.in?0&T&Q' | cut -c 16- | head -2 | xargs echo
+#interval=3600
+#color=#A4C2F4
+
+[volume]
+command=./volume.sh
+interval=repeat
+
+# Update time every 5 seconds
+[battery]
+command=./battery.sh
+interval=5  
+
+[memory]
+command=./memory.sh
+interval=20
+label=
+
+[time]
+command=date +%H:%M
+interval=5
+
+
+# [battery]
+# command=echo battery
+# interval=1
