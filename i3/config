@@ -13,11 +13,10 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:ubuntu 12
+font pango:Ubuntu 12
 
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
+gaps inner 5
+gaps outer 5
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -41,7 +40,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec st
+bindsym $mod+Return exec alacritty 
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -65,9 +64,9 @@ mode "$mode_system" {
     bindsym h exec --no-startup-id $i3lockwall && systemctl hibernate, mode "default"
     bindsym r exec --no-startup-id systemctl reboot, mode "default"
     bindsym Ctrl+s exec --no-startup-id systemctl poweroff -i, mode "default"
-
+#
     # back to normal: Enter or Escape
-    bindsym Return mode "default"
+    bindsym 1Return mode "default"
     bindsym Escape mode "default"
 }
 
@@ -126,9 +125,9 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1: Terminals"
-set $web  "2: web "
-set $code "3: code "
+set $ws1 "1: Terminals  "
+set $web "2: Web "
+set $code "3: Code "
 set $ws4 "4"
 set $ws5 "5"
 set $ws6 "6"
@@ -198,32 +197,6 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+r mode "resize"
-
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-bar {
-        status_command i3blocks
-	colors {
-		background $bg-color
-	    	separator #757575
-		#                  border             background         text
-		focused_workspace  $bg-color          $bg-color          $text-color
-		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
-		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
-	}
-        
-}
-
-
-bindsym Ctrl+Shift+s exec --no-startup-id $i3lockwall && systemctl suspend
-bindsym Shift+Print  exec spectacle --region
-
-exec_always feh --bg-scale /home/daniel/Downloads/Telegram\ Desktop/waterfall.png
-# exec compton -I 0.1
-exec bluetooth off
-exec --no-startup-id "setxkbmap -model pc105 -layout us,ru -option grp:alt_caps_toggle"
-
 #COLORS
 
 set $bg-color 	         #2f343f
@@ -234,12 +207,42 @@ set $urgent-bg-color     #E53935
 
 # window colors
 #                       border              background         text                 indicator
-client.focused          $bg-color           $bg-color          $text-color          #00ff00
-client.unfocused        $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
-client.focused_inactive $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.focused          $bg-color           $bg-color          $text-color          #003153 
+client.unfocused        $inactive-bg-color  $inactive-bg-color $inactive-text-color #00ff00
+client.focused_inactive $inactive-bg-color  $inactive-bg-color $inactive-text-color #00ff00
 client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          #00ff00
+#client.placeholder      #000000             #ff0000            #ffffff              #000000   #0c0c0c
 
 hide_edge_borders both
+bindsym $mod+r mode "resize"
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+        position bottom 
+        status_command i3blocks
+        separator_symbol ⁞
+	colors {
+		background $bg-color
+			#separator #757575
+		#                  border             background         text
+		focused_workspace  $bg-color          $bg-color          $text-color
+		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
+		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
+	}
+        
+}
+
+
+bindsym Ctrl+Shift+s exec --no-startup-id $i3lockwall && systemctl suspend
+bindsym Shift+Print  exec spectacle --region -c
+
+exec_always feh --bg-scale /home/daniel/Downloads/Telegram\ Desktop/waterfall.png
+# exec compton -I 0.1
+exec bluetooth off
+exec --no-startup-id "setxkbmap -model pc105 -layout us,ru,cz -option grp:alt_caps_toggle"
+exec_always --no-startup-id /home/daniel/.config/i3/touchpad.conf    #allows taps on touchpad
+
 
 
 # # Review the lines below and append to ~/.config/i3/config
