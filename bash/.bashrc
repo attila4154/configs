@@ -2,7 +2,9 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+
 source ~/.bash_git.sh
+force_color_prompt=yes
 
 # If not running interactively, don't do anything
 case $- in
@@ -121,3 +123,4 @@ if ! shopt -oq posix; then
   fi
 fi
 . "$HOME/.cargo/env"
+
