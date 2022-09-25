@@ -17,6 +17,9 @@ se mouse+=a
 set tabstop=4
 set shiftwidth=4
 set expandtab
+set guicursor=
+set scrolloff=6
+set incsearch
 
 "=----MAPPINGS----=================================================
 "# copy into clipboard
