@@ -15,8 +15,8 @@ set $mod Mod4
 # is used in the bar {} block below.
 font pango:Ubuntu 12
 
-gaps inner 5
-gaps outer 5
+# gaps inner 5
+# gaps outer 5
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -40,7 +40,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty 
+bindsym $mod+Return exec gnome-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -125,9 +125,12 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1: Terminals  "
-set $web "2: Web "
-set $code "3: Code "
+# set $ws1 "1: Terminals  "
+# set $web "2: Web "
+# set $code "3: Code "
+set $ws1 "1"
+set $web "2"
+set $code "3"
 set $ws4 "4"
 set $ws5 "5"
 set $ws6 "6"
@@ -162,7 +165,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 #apps:
 assign [class="firefox"] $web
-assign [class="jetbrains-clion"] $code
+assign [class="code"] $code
 
 
 # reload the configuration file
@@ -234,13 +237,15 @@ bar {
 }
 
 
-bindsym Ctrl+Shift+s exec --no-startup-id $i3lockwall && systemctl suspend
-bindsym Shift+Print  exec spectacle --region -c
+bindsym $mod+Shift+s exec --no-startup-id $i3lockwall && systemctl suspend
+# kde-spectacle application
+bindsym Shift+Print  exec spectacle -b --region -c
+bindsym Print exec spectacle
 
-exec_always feh --bg-scale /home/daniel/Downloads/Telegram\ Desktop/waterfall.png
+# exec_always feh --bg-scale /home/daniel/Downloads/Telegram\ Desktop/waterfall.png
 # exec compton -I 0.1
-exec bluetooth off
-exec --no-startup-id "setxkbmap -model pc105 -layout us,ru,cz -option grp:alt_caps_toggle"
+# exec bluetooth off
+exec_always --no-startup-id "setxkbmap -model pc105 -layout us,ru,cz -option grp:alt_caps_toggle"
 exec_always --no-startup-id /home/daniel/.config/i3/touchpad.conf    #allows taps on touchpad
 
 

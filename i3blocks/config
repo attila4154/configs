@@ -1,70 +1,20 @@
 #!bin/sh
 
-## Fancy text with multiple colors and shapes
-#[funky]
-#full_text=<span foreground="red" size="x-large">Roses</span> and <i><span color="#EE37B8">violets</span></i>!
-#markup=pango
 
-# Define the custom separator in global properties for boilerplate
-#full_text=〉
-#align=center
-#color=#666666
-#separator=false
-#separator_block_width=7
-
-
-[pomodoro]
-command=python /home/daniel/Documents/i3-pomodoro/src/pomodoro/pomodoro.py
-interval=1
-
-
-[language]
-command=echo $(/home/daniel/xkblayout-state/xkblayout-state print %s)
-interval=repeat
-label=
-
-
-# CZK to RUB converter
-[converter]
-command=./currency.sh
-interval=36000
-label=
-
-
-# Guess the weather hourly
-#[weather]
-#command=curl -Ss 'https://wttr.in?0&T&Q' | cut -c 16- | head -2 | xargs echo
-#interval=3600
-#color=#A4C2F4
-
-#separator=false
-#separator_block_width=25
-
-[volume]
-command=./volume.sh
-interval=repeat
+[temp]
+command=/home/daniel/.config/i3blocks/temp.sh
+interval=10
 
 [memory]
-command=./memory.sh
+command=/home/daniel/.config/i3blocks/memory.sh
 interval=20
 label=
 
 [time]
 command=date +'%H:%M, %e %B'
 interval=5
-label= 
-
-#[date]
-#command=date '+%e %b %G'
-#interval=36000
-## color=#32CD32
-
 
 [battery]
-command=./battery.sh
+command=/home/daniel/.config/i3blocks/battery.sh
 interval=5  
 
-[nothing]
-command=echo
-interval=repeat
-label=

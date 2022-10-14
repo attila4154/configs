@@ -1,0 +1,20 @@
+code
+zathura
+okular
+
+# python stuff
+python3-pip
+pip install virtualenv 
+
+# i3 stuff
+i3
+i3blocks
+rofi
+
+# xournal++ (https://xournalpp.github.io/installation/linux/)
+sudo add-apt-repository ppa:apandada1/xournalpp-stable
+sudo apt update
+sudo apt install xournalpp
+
+# from the snap
+slack
