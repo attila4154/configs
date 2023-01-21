@@ -1,6 +1,12 @@
+# 
+neofetch
+
+# applications
 code
 zathura
 okular
+# has clipboard option, in case of mint, it automatically uses this one instead of vim.tiny (or something like this one)
+vim-gtk3
 
 # python stuff
 python3-pip

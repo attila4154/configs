@@ -20,10 +20,19 @@ set expandtab
 set guicursor=
 set scrolloff=6
 set incsearch
+set ignorecase
+set hlsearch
+set updatetime=1000
+set cmdheight=1
+
 
 "=----MAPPINGS----=================================================
 "# copy into clipboard
 vnoremap <F5> "+y
+
+" fzf
+noremap <C-p> :Files<CR>
+noremap <C-_> :Buffers<CR>
 
 ""==========VIM-BUNDLE SETTINGS====================================
 " set the runtime path to include Vundle and initialize
@@ -39,6 +48,7 @@ Plugin 'VundleVim/Vundle.vim'
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
 Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -50,7 +60,11 @@ Plugin 'myusuf3/numbers.vim'
 Plugin 'tpope/vim-commentary'
 "Plugin 'davidhalter/jedi-vim'
 Plugin 'tpope/vim-surround'
+Plugin 'junegunn/fzf'
+" Plugin 'FuzzyFinder'
+Plugin 'junegunn/fzf.vim'
 
+" Plugin 'vim-airline/vim-airline'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
