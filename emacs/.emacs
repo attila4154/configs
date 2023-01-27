@@ -29,16 +29,64 @@
 (menu-bar-mode -1)            ; Disable the menu bar
 
 (evil-mode 1)
+
+;; Line numbering ======================================
+(column-number-mode)
 (global-display-line-numbers-mode)
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;; Line numbering end===================================
 
 (use-package evil
              :ensure t)
 
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;; IVY=================================================
+(use-package ivy
+ :diminish
+ :bind (("C-s" . swiper)
+        :map ivy-minibuffer-map
+        ("TAB" . ivy-alt-done)
+        ("C-l" . ivy-alt-done)
+        ("C-j" . ivy-next-line)
+        ("C-k" . ivy-previous-line)
+        :map ivy-switch-buffer-map
+        ("C-k" . ivy-previous-line)
+        ("C-l" . ivy-done)
+        ("C-d" . ivy-switch-buffer-kill)
+        :map ivy-reverse-i-search-map
+        ("C-k" . ivy-previous-line)
+        ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
+(use-package counsel)
+;; IVY-DONE============================================
+
+;; (use-package rainbow-delimiters
+;;   :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package which-key
+  :defer 0
+  :diminish which-key-mode
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 1.5))
+
 (use-package org
   :config
   (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
-             :ensure t)
+	org-hide-emphasis-markers t
+	org-startup-indented t)
+  (setq org-agenda-files
+	'("/home/daniel/Documents/General Vault/orgfiles/tasks.org"))
+  (setq org-file-apps '(("\\.tex\\'" . "gvim %s")))
+  :ensure t)
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
@@ -76,6 +124,9 @@
 ;; word wrap
 (with-eval-after-load 'org       
   (add-hook 'org-mode-hook #'visual-line-mode))
+
+;; increases latex image scaling
+(plist-put org-format-latex-options :scale 2)
 ;; ====ORG MODE=END============================================
 
 
