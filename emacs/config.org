@@ -1,0 +1,405 @@
+#+STARTUP: overview
+* Table of Contents                                                   :toc:
+* Config
+** Global configurations
+*** General look
+#+begin_src emacs-lisp
+  (setq inhibit-splash-screen t) ; Disable welcome menu
+  (setq inhibit-startup-message t)
+
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (scroll-bar-mode -1)        ; Disable the scrollbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+
+  (menu-bar-mode -1)            ; Disable the menu bar
+(setq initial-scratch-message ";; Hello world 😎")
+#+end_src
+*** Evil-mode (vim)
+#+begin_src emacs-lisp
+  (use-package evil
+    :config (evil-mode 1))
+#+end_src
+*** History
+#+begin_src emacs-lisp
+;; this saves history in all prompt buffers
+(setq history-length 25)
+(savehist-mode 1)
+
+;; remembers place after closing files
+(save-place-mode 1)
+
+#+end_src
+*** File changing
+if file is changed from outside, emacs will reload it
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+*** Line numbering
+#+begin_src emacs-lisp
+  (column-number-mode)
+  (global-display-line-numbers-mode)
+  ;; Disable line numbers for some modes
+  (dolist (mode '(term-mode-hook
+                  org-mode-hook
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook
+                  pdf-view-mode-hook))
+    (add-hook mode (lambda ()
+      (display-line-numbers-mode 0)
+    )))
+#+end_src
+*** Smooth scrolling
+#+begin_src emacs-lisp
+  (setq scroll-margin 3)
+  (setq scroll-conservatively 4)
+  ;; (pixel-scroll-mode 1)
+#+end_src
+*** Emojis 
+#+begin_src emacs-lisp
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
+  :config
+  (setq emojify-display-style 'unicode)
+  (setq emojify-emoji-styles '(unicode))
+  (bind-key* (kbd "C-c .") #'emojify-insert-emoji))
+
+#+end_src
+*** Recent files
+#+begin_src emacs-lisp
+(use-package recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+#+end_src
+*** Keybindings
+#+begin_src emacs-lisp
+  ;; tab doesnt't work in org mode; there is probably a better way, but...
+  (define-key evil-normal-state-map (kbd "<tab>") 'org-cycle)
+
+
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+  (global-set-key (kbd "C-x r") (lambda () (interactive) (split-window-right 35)))
+
+  (global-set-key (kbd "<f7>") 'ispell-word)
+
+  (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+#+end_src
+** Org mode
+*** init
+#+begin_src emacs-lisp
+  (use-package org
+    :config
+    (setq org-ellipsis " ▾"
+          org-hide-emphasis-markers t
+          org-startup-indented t)
+    (set 'org-agenda-files
+          (append 
+          '("/Users/danila/Documents/synced/personal/gen_per.org"
+            "/Users/danila/Documents/synced/personal/mac_stuff/list.org"
+            )
+          (directory-files-recursively "/Users/danila/Documents/synced/study/semester-6/" "\\.org$"))
+     )
+    (setq org-file-apps '(("\\.tex\\'" . "gvim %s")))
+    (setq org-log-done 'time)
+    (setq org-agenda-tags-column 60)
+    (setq org-tags-column 70)
+    (setq org-priority-highest 1)
+    (setq org-priority-lowest 9)
+    (setq org-priority-default 4)
+    (setq org-todo-keyword-faces
+          '(("TODO" . (:family "American Typewriter" :foreground "#632000"))
+              ("DONE" . (:family "American Typewriter" :foreground "#4F7942"))
+              ))
+    (define-key org-mode-map (kbd "C-c C-q") 'counsel-org-tag)
+    :ensure t)
+
+#+end_src
+*** org customization
+**** Priorities
+#+begin_src emacs-lisp
+  (use-package org-fancy-priorities
+    :ensure t
+    :hook
+    (org-mode . org-fancy-priorities-mode)
+    :config
+    (setq org-fancy-priorities-list '((?1 . "❗")
+                                    (?2 . "⬆")
+                                    (?3 . "⬇")
+                                    (?4 . "☕")
+                                    (?5 . "📖")
+                                    (?6 . "📚")
+                                    (?9 . "🔄")
+                                    (?A . "A")
+                                    (?B . "B")
+                                    (?C . "C"))))
+#+end_src
+**** Org-bullets
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    ;;◉
+    (org-bullets-bullet-list '("●" "○" "●" "○" "●" "○" "●")))
+#+end_src
+**** Left/right paddings
+#+begin_src emacs-lisp
+;; padding from left/right side 
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
+
+#+end_src
+**** Word-wrap
+#+begin_src emacs-lisp
+;; word wrap
+(with-eval-after-load 'org       
+  (add-hook 'org-mode-hook 'visual-line-mode))
+
+#+end_src
+**** Other
+***** Inline emphasis
+#+begin_src emacs-lisp
+;; hide emphasis markers (i.e. "render" italics, bold, etc)
+(setq org-hide-emphasis-markers t)
+
+#+end_src
+***** Latex
+#+begin_src emacs-lisp
+;; increases latex image scaling
+(plist-put org-format-latex-options :scale 1.75)
+
+#+end_src
+***** Images
+#+begin_src emacs-lisp
+;; removes image sizing, so that it could be manually (re)scaled
+(setq org-image-actual-width nil)
+
+#+end_src 
+*** Presenatations/slides
+#+begin_src emacs-lisp
+  (use-package org-tree-slide)
+#+end_src
+*** Downloading images inline
+#+begin_src emacs-lisp
+  (use-package org-download)
+
+#+end_src
+*** Code blocks
+**** org-tempo
+#+begin_src emacs-lisp
+(require 'org-tempo)
+#+end_src
+**** python code blocks
+#+begin_src emacs-lisp
+(use-package python-mode
+  :ensure nil
+  :custom
+  (python-shell-interpreter "python3"))
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+
+(add-to-list 'org-structure-template-alist '("p" . "src python :results output"))
+
+#+end_src
+*** Keybindings
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c a") 'org-agenda)
+#+end_src
+*** Helpers
+**** Close all headings except current
+#+begin_src emacs-lisp
+;; close all headings except current
+(defun org-show-current-heading-tidily ()
+  (interactive)  ;Inteactive
+  "Show next entry, keeping other entries closed."
+  (if (save-excursion (end-of-line) (outline-invisible-p))
+      (progn (org-show-entry) (show-children))
+    (outline-back-to-heading)
+    (unless (and (bolp) (org-on-heading-p))
+      (org-up-heading-safe)
+      (hide-subtree)
+      (error "Boundary reached"))
+    (org-overview)
+    (org-reveal t)
+    (org-show-entry)
+    (show-children)))
+
+(global-set-key (kbd "C-c h") 'org-show-current-heading-tidily)
+#+end_src
+** Ivy
+#+begin_src emacs-lisp
+  (use-package ivy
+   :diminish
+   :bind (("C-s" . swiper)
+          :map ivy-minibuffer-map
+          ("TAB" . ivy-alt-done)
+          ("C-l" . ivy-alt-done)
+          ("C-j" . ivy-next-line)
+          ("C-k" . ivy-previous-line)
+          :map ivy-switch-buffer-map
+          ("C-k" . ivy-previous-line)
+          ("C-l" . ivy-done)
+          ("C-d" . ivy-switch-buffer-kill)
+          :map ivy-reverse-i-search-map
+          ("C-k" . ivy-previous-line)
+          ("C-d" . ivy-reverse-i-search-kill))
+    :config
+    (ivy-mode 1))
+  (use-package counsel)
+
+#+end_src
+** Customization
+*** status line
+**** Doomline
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
+
+#+end_src
+*** Font
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil
+  :font "Fira Code"
+  :height 180)
+#+end_src
+*** Theme
+mindre theme
+#+begin_src emacs-lisp 
+  (use-package mindre-theme
+      :ensure t
+      :custom
+      (mindre-use-more-bold nil)
+      (mindre-use-more-fading nil)
+      (mindre-use-faded-lisp-parens t)
+      :config
+      (custom-set-faces
+        '(org-special-keyword ((t (:inherit (mindre-faded fixed-pitch) :height 0.8 :family "American Typewriter"))))
+        '(org-tag ((t (:inherit ## :foreground "#23457f" :height 0.9)))))
+      (load-theme 'mindre t)
+      (setq line-spacing 1))
+
+#+end_src
+
+gruvbox theme
+#+begin_src emacs-lisp
+  ;; (use-package gruvbox-theme
+  ;; :config
+  ;; (load-theme 'gruvbox-dark-medium t))
+
+#+end_src
+*** Delimeters
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+*** Olivetti
+#+begin_src emacs-lisp
+(use-package olivetti
+  :config (olivetti-mode 1))
+
+#+end_src
+** Development
+*** General
+#+begin_src emacs-lisp
+
+#+end_src
+*** Magit
+#+begin_src emacs-lisp
+(use-package magit)
+#+end_src
+*** LSP
+#+begin_src emacs-lisp
+
+#+end_src
+*** Latex
+#+begin_src emacs-lisp
+      (use-package tex
+        :ensure auctex)
+            (setq TeX-PDF-mode t)
+            (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+            (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+     (add-hook 'LaTeX-mode-hook
+          (lambda()
+            (local-set-key [C-tab] 'TeX-complete-symbol)))
+           (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+     ;; Use pdf-tools to open PDF files
+   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+         TeX-source-correlate-start-server t)
+
+   ;; Update PDF buffers after successful LaTeX runs
+   (add-hook 'TeX-after-compilation-finished-functions
+              #'TeX-revert-document-buffer)
+  (setq-default TeX-master nil)
+    (eval-after-load "tex" 
+    '(setcdr (assoc "LaTeX" TeX-command-list)
+            '("%`%l%(mode) -shell-escape%' %t"
+            TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")
+        )
+    )
+#+end_src
+** Helpers
+*** Study
+**** open subject
+#+begin_src emacs-lisp -n
+  (defun open-subject()
+    (let (
+          (bakalarka-file "/Users/danila/Documents/synced/study/semester-6/bakalarka/bakalarka.org")
+          (todo-file "/Users/danila/Documents/synced/study/todo.org")
+          (base "/Users/danila/Documents/synced/study/semester-6/")
+          (emacs-config "/Users/danila/.config/emacs/config.org")
+          (subject (completing-read "Choose subject:" '("todo" "DPR" "bakalarka" "ML2" "VWM" "ZUM" "emacs config")))
+         )
+       (cond
+         ((string= subject "bakalarka") (find-file bakalarka-file))
+         ((string= subject "todo") (find-file todo-file))
+         ((string= subject "emacs config") (find-file emacs-config))
+         (t (find-file (concat base subject "/course_" (downcase subject) ".org")))
+       ))
+    )
+
+  (bind-key (kbd "<f9>") (lambda () (interactive) (open-subject)))
+
+#+end_src
+*** which-key
+#+begin_src emacs-lisp
+(use-package which-key
+  :defer 0
+  :diminish which-key-mode
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 1.5))
+#+end_src
+*** pdf-tools
+for reading pdfs inside emacs
+#+begin_src emacs-lisp
+    (use-package pdf-tools
+      :config
+    (pdf-tools-install)
+    (blink-cursor-mode -1)
+  )
+
+#+end_src
+
+** Mac specific
+*** Open file with default app in dired
+#+begin_src emacs-lisp
+;; Open files in dired mode using 'open'
+(eval-after-load "dired"
+  '(progn
+     (define-key dired-mode-map (kbd "z")
+       (lambda () (interactive)
+         (let ((fn (dired-get-file-for-visit)))
+           (start-process "default-app" nil "open" fn))))))
+
+#+end_src
